@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ôn Tập Cuối Kỳ 2 – Tin Học 12 (2025-2026)</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6fb; color: #222; font-size: 15px; }
+
+  .header {
+    background: linear-gradient(135deg, #1565c0, #0d47a1);
+    color: white;
+    padding: 28px 32px 22px;
+    text-align: center;
+  }
+  .header h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .header p { font-size: 14px; opacity: 0.85; }
+
+  .student-info {
+    background: white;
+    border-bottom: 2px solid #e3e8f0;
+    padding: 14px 32px;
+    display: flex; gap: 40px; flex-wrap: wrap;
+  }
+  .student-info label { font-size: 13px; color: #555; }
+  .student-info input {
+    border: none; border-bottom: 1.5px solid #aaa;
+    outline: none; font-size: 14px; width: 200px; margin-left: 8px;
+    background: transparent;
+  }
+
+  .controls {
+    background: white;
+    padding: 14px 32px;
+    display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+    border-bottom: 1px solid #e3e8f0;
+  }
+  .btn {
+    padding: 8px 20px; border-radius: 6px; border: none; cursor: pointer;
+    font-size: 14px; font-weight: 600; transition: 0.15s;
+  }
+  .btn-primary { background: #1565c0; color: white; }
+  .btn-primary:hover { background: #0d47a1; }
+  .btn-success { background: #2e7d32; color: white; }
+  .btn-success:hover { background: #1b5e20; }
+  .btn-outline { background: white; color: #1565c0; border: 1.5px solid #1565c0; }
+  .btn-outline:hover { background: #e3f0ff; }
+  .btn-danger { background: #c62828; color: white; }
+  .btn-danger:hover { background: #b71c1c; }
+
+  .score-bar {
+    display: none;
+    background: white;
+    padding: 16px 32px;
+    border-bottom: 2px solid #e3e8f0;
+    font-size: 15px;
+  }
+  .score-bar .score-num { font-size: 26px; font-weight: 700; color: #1565c0; }
+
+  .section {
+    padding: 24px 32px;
+  }
+  .section-title {
+    font-size: 17px; font-weight: 700; color: #1565c0;
+    border-left: 4px solid #1565c0; padding-left: 12px;
+    margin-bottom: 18px; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  .question-block {
+    background: white;
+    border-radius: 10px;
+    border: 1.5px solid #e3e8f0;
+    padding: 18px 22px;
+    margin-bottom: 16px;
+    transition: border-color 0.2s;
+  }
+  .question-block.correct { border-color: #43a047; background: #f1fff3; }
+  .question-block.wrong { border-color: #e53935; background: #fff3f3; }
+
+  .question-text {
+    font-weight: 600; font-size: 14.5px; margin-bottom: 13px; color: #1a2340;
+    line-height: 1.6;
+  }
+  .question-num { color: #1565c0; margin-right: 4px; }
+
+  .options { display: flex; flex-direction: column; gap: 7px; }
+
+  .option-label {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 9px 13px; border-radius: 7px; cursor: pointer;
+    border: 1px solid #e0e5f0; background: #f9fafc;
+    font-size: 14px; line-height: 1.5;
+    transition: background 0.15s, border-color 0.15s;
+    user-select: none;
+  }
+  .option-label:hover { background: #edf2ff; border-color: #90aee0; }
+  .option-label input[type=radio], .option-label input[type=checkbox] {
+    margin-top: 2px; flex-shrink: 0; accent-color: #1565c0;
+  }
+
+  .option-label.correct-ans { background: #e6f4ea; border-color: #43a047; color: #1b5e20; font-weight: 600; }
+  .option-label.wrong-ans { background: #fdecea; border-color: #e53935; color: #b71c1c; text-decoration: line-through; }
+  .option-label.missed-ans { background: #e6f4ea; border-color: #43a047; color: #1b5e20; font-style: italic; }
+
+  .result-icon {
+    display: inline-block; margin-left: 8px;
+    font-size: 13px; font-weight: 700;
+  }
+  .result-icon.ok { color: #2e7d32; }
+  .result-icon.no { color: #c62828; }
+
+  .feedback {
+    display: none; margin-top: 10px; padding: 8px 12px;
+    border-radius: 6px; font-size: 13px; font-weight: 600;
+  }
+  .feedback.correct { display: block; background: #e6f4ea; color: #1b5e20; }
+  .feedback.wrong { display: block; background: #fdecea; color: #b71c1c; }
+
+  @media (max-width: 600px) {
+    .section { padding: 16px 12px; }
+    .controls, .student-info { padding: 12px 14px; }
+    .header { padding: 18px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>ĐỀ CƯƠNG CUỐI KỲ 2 – TIN HỌC 12</h1>
+  <p>Năm học 2025 – 2026</p>
+</div>
+
+<div class="student-info">
+  <div><label>Họ tên: <input type="text" placeholder="Nhập họ tên..."></label></div>
+  <div><label>Lớp: <input type="text" placeholder="Nhập lớp..." style="width:120px"></label></div>
+</div>
+
+<div class="controls">
+  <button class="btn btn-success" onclick="submitAll()">✔ Nộp bài & Chấm điểm</button>
+  <button class="btn btn-outline" onclick="toggleAnswers()">👁 Xem đáp án</button>
+  <button class="btn btn-danger" onclick="resetAll()">↺ Làm lại</button>
+</div>
+
+<div class="score-bar" id="scoreBar">
+  Kết quả: <span class="score-num" id="scoreNum">0</span> / <span id="scoreTotal">0</span> câu đúng
+  &nbsp;|&nbsp; <span id="scorePct"></span>
+</div>
+
+<!-- PHẦN I -->
+<div class="section">
+  <div class="section-title">I. Trắc nghiệm khách quan (50 câu)</div>
+  <div id="part1"></div>
+</div>
+
+<!-- PHẦN II -->
+<div class="section">
+  <div class="section-title">II. Trắc nghiệm Đúng / Sai (5 câu)</div>
+  <div id="part2"></div>
+</div>
+
+<div class="controls" style="margin-bottom:40px;">
+  <button class="btn btn-success" onclick="submitAll()">✔ Nộp bài & Chấm điểm</button>
+  <button class="btn btn-danger" onclick="resetAll()">↺ Làm lại</button>
+</div>
+
+<script>
+// ===== DATA =====
+const part1 = [
+  {
+    q: "Ngành học nào sau đây KHÔNG thuộc nhóm ngành phục vụ nghề Quản trị và Bảo trì hệ thống?",
+    opts: ["Thiết kế công nghiệp","Quản trị mạng","An toàn thông tin","Hệ thống thông tin quản lý"],
+    ans: [0]
+  },
+  {
+    q: "Để thêm thành phần nội dung là hình ảnh, ta sử dụng chức năng nào trong Google Sites?",
+    opts: ["Nhúng","Chèn","Giao diện","Trang"],
+    ans: [1]
+  },
+  {
+    q: "Khi tạo trang web bằng Google Sites, để chèn logo cho trang web: Ta chọn Cài đặt và thực hiện:",
+    opts: [
+      "Chọn phần Hình ảnh thương hiệu, chọn Tải lên ở mục Biểu tượng yêu thích",
+      "Chọn mục Biểu ngữ thông báo, chọn Hiển thị biểu ngữ",
+      "Chọn phần Hình ảnh thương hiệu, chọn Tải lên ở mục Biểu trưng",
+      "Chọn phần Điều hướng, chọn Tải lên ở mục Màu sắc"
+    ],
+    ans: [2]
+  },
+  {
+    q: "Yếu tố nào là nguyên nhân chính khiến nhu cầu tuyển dụng quản trị mạng tăng cao?",
+    opts: ["Giá phần mềm giảm mạnh","Nhiều người không dùng máy tính","Gia tăng số lượng thiết bị kết nối internet","Sự phát triển của mạng xã hội"],
+    ans: [2]
+  },
+  {
+    q: "Để tạo trang con, em sử dụng bảng chọn nào?",
+    opts: ["Bảng chọn Chèn.","Bảng chọn Trang.","Bảng chọn Giao diện","Bảng chọn Cấu trúc"],
+    ans: [1]
+  },
+  {
+    q: "Để theo đuổi nghề Bảo mật hệ thống thông tin, sinh viên có thể chọn ngành học nào?",
+    opts: ["Báo chí - Truyền thông","Y khoa","Quản trị kinh doanh","An toàn thông tin"],
+    ans: [3]
+  },
+  {
+    q: "Đâu KHÔNG PHẢI là chức năng của phần mềm tạo trang web Google Sites?",
+    opts: [
+      "Tạo và chỉnh sửa nội dung trang web một cách trực quan",
+      "Chèn biểu mẫu thu thập ý kiến, thông tin, phản hồi",
+      "Chèn hình ảnh, video, tài liệu từ Google Drive vào trang web",
+      "Thiết kế trang web bằng cách viết mã HTML, CSS"
+    ],
+    ans: [3]
+  },
+  {
+    q: "Để theo đuổi nghề nghiệp liên quan đến bảo mật thông tin, học sinh nên bắt đầu phát triển kỹ năng nào từ sớm?",
+    opts: ["Kỹ năng trình bày PowerPoint","Kỹ năng tổ chức sự kiện","Kỹ năng lập trình và tư duy logic","Kỹ năng viết sáng tạo"],
+    ans: [2]
+  },
+  {
+    q: "Biểu tượng đại diện cho tất cả các trang web trong một website và hiển thị trước địa chỉ trang web trên tab của trình duyệt được gọi là gì?",
+    opts: ["Favlogo","Weblogo","Logo","Favicon"],
+    ans: [3]
+  },
+  {
+    q: "Khi tạo trang web bằng Google Sites, muốn chèn ảnh trong phần thân trang web từ máy tính, ta chọn:",
+    opts: [
+      "Chọn bảng chọn Chèn, chọn Hình ảnh, chọn Tải lên",
+      "Chọn Xem trước, chọn Tải ảnh",
+      "Chọn bảng chọn Trang, chọn Ảnh",
+      "Chọn bảng chọn Chủ đề, chọn Ảnh nền"
+    ],
+    ans: [0]
+  },
+  {
+    q: "Công việc nào dưới đây thuộc nghề quản trị mạng?",
+    opts: [
+      "Bảo đảm hệ thống mạng hoạt động an toàn",
+      "Thiết kế và xây dựng các ứng dụng di động",
+      "Thiết kế cơ sở dữ liệu phân tán trên mạng",
+      "Phát triển phần mềm trò chơi trực tuyến"
+    ],
+    ans: [0]
+  },
+  {
+    q: "Khi tạo trang web bằng Google Sites, muốn xem trang web hiển thị như thế nào trên máy tính, ta chọn xem trước bằng chế độ nào sau đây?",
+    opts: ["Trình duyệt web (Web browser)","Máy tính bảng (Tablet)","Điện thoại (Phone)","Màn hình lớn (Large Screen)"],
+    ans: [3]
+  },
+  {
+    q: "Khi bạn thay đổi nội dung văn bản trong Google Sites, nội dung đó sẽ:",
+    opts: [
+      "Mất đi nếu không nhấn \"Lưu\" trước khi thoát khỏi ứng dụng",
+      "Tự động hiển thị nội dung thay đổi sau mỗi 5 phút",
+      "Tự động lưu bản nháp nhưng chỉ hiển thị khi nhấn \"Xuất bản\"",
+      "Tự động cập nhật trên web ngay lập tức"
+    ],
+    ans: [2]
+  },
+  {
+    q: "Tại sao nghề Bảo mật hệ thống thông tin có nhu cầu nhân lực cao trong hiện tại và tương lai?",
+    opts: [
+      "Vì đây là nghề truyền thống có từ lâu đời",
+      "Do sự gia tăng của các mối đe dọa an ninh mạng và nhu cầu bảo vệ dữ liệu",
+      "Do không cần nhiều kiến thức chuyên môn nhưng lương vẫn cao",
+      "Vì công việc này đơn giản, ai cũng có thể làm được"
+    ],
+    ans: [1]
+  },
+  {
+    q: "Khi tạo trang web bằng Google Sites, để thêm văn bản vào phần thân trang web, ta dùng công cụ nào?",
+    opts: ["Chủ đề","Chèn, chọn Hộp văn bản","Định dạng","Trang"],
+    ans: [1]
+  },
+  {
+    q: "Đối với quản trị mạng, kiến thức nào sau đây là quan trọng?",
+    opts: [
+      "Kiến thức về marketing trực tuyến",
+      "Kiến thức về thiết kế web thẩm mỹ",
+      "Kiến thức về cấu hình và vận hành mạng máy tính",
+      "Kiến thức về chỉnh sửa video"
+    ],
+    ans: [2]
+  },
+  {
+    q: "Bảng chọn trên thanh điều hướng giúp ích gì?",
+    opts: [
+      "Giúp người xem phóng to chữ",
+      "Giúp người xem đổi màu trang",
+      "Giúp người xem di chuyển giữa các trang",
+      "Giúp người xem tải tệp về máy"
+    ],
+    ans: [2]
+  },
+  {
+    q: "Công việc chính của người làm nghề Sửa chữa và bảo trì máy tính là gì?",
+    opts: [
+      "Quản lý cơ sở dữ liệu doanh nghiệp, dữ liệu của các tổ chức.",
+      "Phát triển phần mềm ứng dụng cho máy tính và điện thoại di động.",
+      "Lắp ráp, chẩn đoán và sửa chữa các lỗi phần cứng, phần mềm máy tính",
+      "Lập trình thiết kế trang web và giao diện website"
+    ],
+    ans: [2]
+  },
+  {
+    q: "Nếu các mục trong Menu không được sắp xếp hợp lý, điều gì có thể xảy ra?",
+    opts: ["Website bị lỗi hiển thị","Người dùng khó tìm thông tin","Nội dung tự động thay đổi","Trang web chạy nhanh hơn"],
+    ans: [1]
+  },
+  {
+    q: "Trong thiết kế bố cục, em hãy giải thích mục đích của việc sử dụng thuộc tính text-align: justify cho các đoạn văn bản có nội dung dài?",
+    opts: [
+      "Giúp văn bản tập trung vào chính giữa khung hình nhằm tạo ra sự chú ý trực tiếp cho người xem web.",
+      "Giúp văn bản tự động xuống dòng tại các vị trí đặc biệt để cấu trúc của đoạn văn trở nên mạch lạc.",
+      "Giúp văn bản căn đều hai bên lề trái và phải để bố cục trang web trông cân đối và chuyên nghiệp.",
+      "Giúp văn bản dồn hết sang phía bên trái để tạo khoảng trống bên phải cho việc bố trí các hình ảnh."
+    ],
+    ans: [2]
+  },
+  {
+    q: "Sự khác biệt bản chất giữa việc chèn hình ảnh bằng lệnh \"Tải lên\" (Upload) và \"Chọn\" (Select) trong Google Sites là gì?",
+    opts: [
+      "\"Tải lên\" sẽ làm tăng dung lượng lưu trữ của Google Sites, còn \"Chọn\" thì không tiêu tốn dung lượng",
+      "\"Tải lên\" lấy ảnh từ bộ nhớ thiết bị cá nhân, còn \"Chọn\" lấy ảnh từ các nguồn lưu trữ đám mây hoặc internet",
+      "\"Tải lên\" cho phép chỉnh sửa kích thước ảnh, còn \"Chọn\" thì hình ảnh sẽ bị cố định kích thước",
+      "\"Tải lên\" yêu cầu ảnh phải có định dạng .jpg, còn \"Chọn\" hỗ trợ tất cả các định dạng ảnh khác"
+    ],
+    ans: [1]
+  },
+  {
+    q: "Yêu cầu kiến thức nào sau đây là KHÔNG cần thiết cho chuyên gia quản trị hệ thống?",
+    opts: [
+      "Kiến thức về lập trình web.",
+      "Kỹ năng giao tiếp và quản lý thời gian.",
+      "Kiến thức về cấu trúc và hoạt động của mạng máy tính.",
+      "Hiểu biết về luật pháp và tuân thủ quy định bảo mật thông tin."
+    ],
+    ans: [0]
+  },
+  {
+    q: "Em hãy giải thích sự khác biệt về kết quả hiển thị giữa hai thuộc tính color và background-color khi áp dụng cho một đoạn văn bản?",
+    opts: [
+      "Thuộc tính color dùng để thiết lập độ đậm nhạt, còn background-color dùng để thiết lập màu sắc.",
+      "Thuộc tính color làm thay đổi màu của chữ, còn background-color làm thay đổi màu vùng phía sau chữ.",
+      "Thuộc tính color làm thay đổi màu của toàn khối, còn background-color chỉ thay đổi màu các ký tự.",
+      "Thuộc tính color chỉ có tác dụng với phông chữ hệ thống, còn background-color tác động lên tất cả."
+    ],
+    ans: [1]
+  },
+  {
+    q: "Phát biểu nào sau đây SAI khi nói về biểu mẫu trên Google Sites?",
+    opts: [
+      "Google Forms cung cấp cho người dùng một số kiểu biểu mẫu được tạo sẵn",
+      "Để có thể chèn biểu mẫu vào trang web thì biểu mẫu đó phải được thiết kế bằng ứng dụng Forms của Google.",
+      "Ngoài cách làm tạo biểu mẫu bằng ứng dụng Forms của Google, có thể tạo trực tiếp trên Google Sites nhưng không thể sử dụng mẫu có sẵn mà phải tự thiết kế.",
+      "Việc tạo biểu mẫu trên trang web thực chất là tạo biểu mẫu bằng ứng dụng Forms của Google rồi nhúng vào trang web được thiết kế bằng Google Sites"
+    ],
+    ans: [2]
+  },
+  {
+    q: "Vì sao ngành Kỹ thuật máy tính phù hợp với người học nghề sửa chữa và bảo trì máy tính?",
+    opts: [
+      "Vì cung cấp kiến thức về phần mềm kế toán",
+      "Vì giúp hiểu sâu về phần cứng và nguyên lý hoạt động của máy tính",
+      "Vì đào tạo về cách thiết kế đồ họa chuyên nghiệp",
+      "Vì chuyên về quảng bá sản phẩm trên mạng xã hội"
+    ],
+    ans: [1]
+  },
+  {
+    q: "Trang chủ mặc định khi tạo web mới trong Google Sites là?",
+    opts: ["Trang About","Trang Home","Trang Contact","Trang Index"],
+    ans: [1]
+  },
+  {
+    q: "Người sửa chữa và bảo trì máy tính thực hiện công việc nào sau đây liên quan đến phần mềm?",
+    opts: ["Tư vấn nâng cấp phần cứng.","Thay thế linh kiện hỏng.","Lắp đặt thiết bị mạng.","Cập nhật hệ điều hành."],
+    ans: [3]
+  },
+  {
+    q: "Khi tạo trang web bằng Google Sites, phần \"menu\" hiển thị ở đâu?",
+    opts: ["Không có menu","Phía trên hoặc bên cạnh trang.","Bên trái trình duyệt","Phía cuối trang"],
+    ans: [1]
+  },
+  {
+    q: "Dữ liệu thống kê phản hồi của người dùng sau khi trang web được xuất bản được tập hợp vào ứng dụng nào của Google?",
+    opts: ["Google Sheets","Google Keep","Google Docs","Google Drive"],
+    ans: [0]
+  },
+  {
+    q: "Tại sao việc sử dụng \"Trang con\" (Subpage) lại được khuyến khích khi xây dựng một website có nhiều nội dung phức tạp?",
+    opts: [
+      "Để ngăn chặn các công cụ tìm kiếm bên ngoài truy cập vào các nội dung quan trọng của website",
+      "Để trang web tự động gửi thông báo cho người quản trị khi có người truy cập vào các mục nhỏ",
+      "Để tăng dung lượng lưu trữ của website và cho phép chèn được nhiều tệp tin đa phương tiện hơn",
+      "Để tạo ra cấu trúc phân cấp logic, giúp bảng chọn điều hướng gọn gàng và người dùng dễ tìm kiếm thông tin theo chủ đề"
+    ],
+    ans: [3]
+  },
+  {
+    q: "Bạn hãy so sánh sự khác biệt cơ bản về phạm vi sử dụng giữa vùng chọn định danh ID và vùng chọn lớp Class trong một trang web?",
+    opts: [
+      "Vùng chọn định danh dùng để nhóm nhiều đối tượng, còn vùng chọn lớp chỉ dùng cho một đối tượng duy nhất.",
+      "Vùng chọn định danh chỉ tác động lên các thẻ hình ảnh, còn vùng chọn lớp tác động lên các thẻ văn bản.",
+      "Vùng chọn định danh quy định kích thước của khối, còn vùng chọn lớp quy định màu sắc của các phần tử.",
+      "Vùng chọn định danh chỉ dùng cho một đối tượng duy nhất, còn vùng chọn lớp dùng để nhóm nhiều đối tượng."
+    ],
+    ans: [3]
+  },
+  {
+    q: "Nhiệm vụ nào vượt ngoài vai trò bảo trì?",
+    opts: ["Bảo dưỡng máy tính định kì.","Sửa lỗi thiết bị khi hỏng.","Viết phần mềm quản lí điểm.","Cài đặt phần mềm học tập."],
+    ans: [2]
+  },
+  {
+    q: "Lí do chủ yếu nhất nào sau đây về gia tăng nhu cầu tuyển dụng vị trí sửa chữa và bảo trì máy tính?",
+    opts: [
+      "Máy tính ngày càng được sử dụng rộng rãi trong xã hội hiện đại.",
+      "Nhu cầu trang bị máy tính có cấu hình cao để chạy được các ứng dụng AI.",
+      "Phần mềm độc hại ngày càng dễ phát tán trên không gian mạng.",
+      "Nhiều trường đại học đào tạo về lĩnh vực kỹ thuật máy tính và mạng."
+    ],
+    ans: [0]
+  },
+  {
+    q: "Google Sites thuộc loại công cụ tạo web nào sau đây?",
+    opts: ["Phần mềm máy chủ","Trình tạo website dạng kéo – thả","Công cụ lập trình web","CMS chuyên nghiệp"],
+    ans: [1]
+  },
+  {
+    q: "Khi sử dụng các \"Khối nội dung\" (Content blocks) có sẵn trong Google Sites, lợi ích chính mà người quản trị trang web nhận được là gì?",
+    opts: [
+      "Cho phép người dùng chỉnh sửa mã nguồn HTML trực tiếp bên trong từng khối nội dung",
+      "Giúp trang web tự động thay đổi nội dung hiển thị theo sở thích của người truy cập",
+      "Tự động tối ưu hóa bố cục hình ảnh và văn bản một cách chuyên nghiệp và nhanh chóng",
+      "Tăng tốc độ tải trang bằng cách nén dung lượng hình ảnh khi đưa vào khối."
+    ],
+    ans: [2]
+  },
+  {
+    q: "Để thêm một trang mới trong Google Sites, bạn cần thực hiện thao tác nào?",
+    opts: [
+      "Chọn biểu tượng \"+\" trong phần \"Pages\"",
+      "Vào mục Drive để tạo mới",
+      "Mở Gmail để tạo",
+      "Nhấp \"Insert\" > \"New Page\""
+    ],
+    ans: [0]
+  },
+  {
+    q: "Giải thích tại sao nghề \"Quản trị hệ thống\" có thể là lựa chọn hợp lý cho học sinh sau khi học \"Sửa chữa và bảo trì máy tính\"?",
+    opts: [
+      "Quản trị hệ thống giúp học sinh mở rộng khả năng quản lý và bảo trì các hệ thống phần mềm, mạng sau khi đã nắm vững kiến thức về phần cứng.",
+      "Quản trị hệ thống chỉ học về phần mềm mà không cần đến phần cứng.",
+      "Quản trị hệ thống chỉ liên quan đến các công việc marketing và không có liên quan gì đến công nghệ.",
+      "Quản trị hệ thống chỉ liên quan đến các công việc quản lý và không cần đến kiến thức về phần cứng."
+    ],
+    ans: [0]
+  },
+  {
+    q: "Thái độ và đạo đức nghề nghiệp nào sau đây là quan trọng nhất cho cả hai nghề Sửa chữa máy tính và Quản trị mạng?",
+    opts: [
+      "Tôn trọng quyền riêng tư và bảo mật tuyệt đối dữ liệu của khách hàng hoặc tổ chức.",
+      "Chỉ làm việc khi có sự giám sát trực tiếp từ cấp trên hoặc chủ sở hữu thiết bị.",
+      "Sẵn sàng chia sẻ mật khẩu quản trị cho bất kỳ ai yêu cầu để thể hiện sự nhiệt tình.",
+      "Luôn ưu tiên sử dụng các linh kiện rẻ tiền nhất để tối đa hóa lợi nhuận cá nhân."
+    ],
+    ans: [0]
+  },
+  {
+    q: "Một trường học có hàng trăm máy tính phục vụ học tập. Các máy thường cần kiểm tra và sửa lỗi định kì. Điều này cho thấy điều gì về nhu cầu nhân lực bảo trì máy tính?",
+    opts: [
+      "Giáo viên có thể tự sửa mọi sự cố.",
+      "Chỉ cần bảo trì khi máy hỏng hoàn toàn.",
+      "Nhu cầu bảo trì tăng khi số lượng máy tính nhiều.",
+      "Máy tính trong trường học ít cần bảo trì."
+    ],
+    ans: [2]
+  },
+  {
+    q: "Một học sinh thiết kế website bằng Google Sites và muốn nhúng một video, bài viết từ trang web khác vào để làm phong phú nội dung. Để đảm bảo sử dụng nội dung đúng cách, học sinh cần làm gì?",
+    opts: [
+      "Sao chép nội dung về rồi đăng lại",
+      "Nhúng nội dung được phép sử dụng kèm theo ghi nguồn video",
+      "Nhúng nội dung và chỉnh sửa lại theo ý mình để phù hợp hơn",
+      "Cần lựa chọn nội dung theo đúng mục đích cá nhân, sao cho tăng lượt tương tác"
+    ],
+    ans: [1]
+  },
+  {
+    q: "Bạn muốn xây dựng một trang web giới thiệu đội ngũ nhân viên của công ty. Mỗi nhân viên cần có một trang riêng với thông tin chi tiết. Bạn sẽ làm gì để hoàn thiện yêu cầu này?",
+    opts: [
+      "Chỉ thêm hình ảnh của nhân viên mà không cần chi tiết.",
+      "Thêm từng trang mới cho mỗi nhân viên và liên kết các trang với nhau",
+      "Sử dụng chức năng xuất bản để hiển thị danh sách nhân viên",
+      "Thêm tất cả thông tin vào một trang duy nhất"
+    ],
+    ans: [1]
+  },
+  {
+    q: "Một trang Web sau quá trình hoạt động thì có nhu cầu thay đổi tên. Điều gì sẽ xảy ra với mục liên kết tương ứng trên thanh điều hướng?",
+    opts: ["Không thay đổi","Bị xóa bỏ, không thể hoạt động","Tự động thay đổi theo","Cần phải chỉnh sửa thủ công"],
+    ans: [2]
+  },
+  {
+    q: "Mẫu CSS thiết lập định dạng khi di chuyển con trỏ chuột lên đối tượng có id=\"title\" sẽ hiển thị với kiểu chữ đậm là:",
+    opts: [
+      "#title:hover {font-weight: bold;}",
+      "#title:hover {font-style: bold;}",
+      "title:hover {font-style: bold;}",
+      ".title:hover {font-weight: bold;}"
+    ],
+    ans: [0]
+  },
+  {
+    q: "Để nhúng một biểu mẫu khảo sát (Google Forms) vào trang web lớp học bạn đang tạo, bạn sẽ:",
+    opts: [
+      "Dán mã HTML vào khung nội dung",
+      "Tạo biểu mẫu trong Google Docs và dán link",
+      "Không thể chèn biểu mẫu vào Google Sites",
+      "Vào \"Insert\" > \"Forms\" và chọn biểu mẫu cần chèn"
+    ],
+    ans: [3]
+  },
+  {
+    q: "Một website có nội dung rất dài trong một trang duy nhất, người xem phải cuộn nhiều và khó tìm thông tin. Cách cải thiện phù hợp nhất là:",
+    opts: [
+      "Sử dụng mục lục kèm liên kết neo",
+      "Giữ nguyên một trang nhưng bổ sung thêm hình ảnh minh họa để tăng trực quan",
+      "Rút gọn nội dung và chuyển phần chi tiết sang file tài liệu đính kèm",
+      "Chia nội dung thành nhiều section rõ ràng và/hoặc tách thành các trang riêng trong Google Sites"
+    ],
+    ans: [3]
+  },
+  {
+    q: "Một học sinh muốn thử thay đổi giao diện (Themes) và bố cục trang nhưng sợ làm hỏng website hiện tại. Cách xử lý hợp lý là:",
+    opts: [
+      "Tạo bản sao website để thử nghiệm",
+      "Không nên thay đổi vì rất khó để điều chỉnh lại theo đúng bản gốc",
+      "Xóa bớt nội dung đơn giản",
+      "Chỉnh sửa trực tiếp rồi sửa lại nếu sai"
+    ],
+    ans: [0]
+  },
+  {
+    q: "Để bỏ dấu gạch chân mặc định của thẻ &lt;a&gt;, ta dùng:",
+    opts: ["font-style: none;","text-format: none;","text-decoration: none;","underline: none;"],
+    ans: [2]
+  },
+  {
+    q: "Bạn cần thêm một video minh họa bài giảng vào trang web. Làm thế nào để thực hiện điều này hiệu quả nhất?",
+    opts: [
+      "Sử dụng \"Insert\" > \"YouTube\" để chèn trực tiếp video",
+      "Không thể chèn video vào Google Sites",
+      "Gửi video qua email cho người truy cập",
+      "Tải video lên Google Drive rồi gửi link"
+    ],
+    ans: [0]
+  },
+  {
+    q: "Một website có bố cục Content tốt, nhưng người dùng vẫn khó chuyển nhanh giữa các nội dung liên quan nằm ở các trang khác nhau. Giải pháp tối ưu nhất là:",
+    opts: [
+      "Đổi giao diện Themes",
+      "Thêm liên kết nội bộ giữa các trang và các khối nội dung liên quan",
+      "Gộp toàn bộ nội dung về một trang để dễ thao tác và tối giản nội dung",
+      "Tăng số lượng Menu"
+    ],
+    ans: [1]
+  },
+  {
+    q: "Bạn muốn toàn bộ trang sử dụng font Arial. CSS viết ở đâu?",
+    opts: [
+      ".all { font-family: Arial; }",
+      "p { font-family: Arial; }",
+      "html { font: Arial; }",
+      "body { font-family: Arial; }"
+    ],
+    ans: [3]
+  }
+];
+
+// Part 2: Đúng/Sai — mỗi câu có 4 ý, đánh dấu đúng/sai cho từng ý
+const part2 = [
+  {
+    q: "Trong quá trình sử dụng CSS để thiết kế trang web, nhận định nào sau đây là ĐÚNG?",
+    items: [
+      { text: "CSS là ngôn ngữ được sử dụng để thiết lập nội dung cốt lõi cho trang web.", correct: false },
+      { text: "Thẻ &lt;style&gt; chỉ có thể được sử dụng bên trong phần thân trang (&lt;body&gt;).", correct: false },
+      { text: "Khi muốn áp dụng cùng một kiểu định dạng cho nhiều phần tử HTML, nên sử dụng CSS ngoài để dễ quản lý và tái sử dụng.", correct: true },
+      { text: "Để căn giữa một khối nội dung, ta sử dụng lệnh margin: 0 auto;, còn để căn trái mặc định thì không cần lệnh này.", correct: true }
+    ]
+  },
+  {
+    q: "Khi thực hành tạo trang web bằng Google Sites, phát biểu nào sau đây SAI?",
+    items: [
+      { text: "Google Sites cho phép chèn hình ảnh và văn bản lên cùng một trang.", correct: true },
+      { text: "Người dùng có thể thay đổi bố cục của trang bằng cách chọn các mẫu có sẵn.", correct: true },
+      { text: "Khi chèn liên kết vào văn bản, phần mềm sẽ tự động tạo liên kết có thể nhấp được.", correct: true },
+      { text: "Người dùng có thể dùng mã HTML để chỉnh sửa chi tiết và thay đổi hoàn toàn cấu trúc hệ thống của Google Sites.", correct: false }
+    ]
+  },
+  {
+    q: "Chọn nhận định SAI trong các ý kiến sau về việc tạo phần đầu trang trên Google Sites:",
+    items: [
+      { text: "Dòng \"Nhập tên trang web\" cho phép thêm biểu tượng, logo và favicon (png, jpg, gif).", correct: false },
+      { text: "\"Loại tiêu đề\" cung cấp các kích thước: Bìa, Biểu ngữ lớn, Biểu ngữ và Chỉ có tiêu đề.", correct: true },
+      { text: "Để chèn hình ảnh từ thư viện có sẵn của Google Sites làm ảnh nền, ta chọn mục Hình ảnh rồi chọn \"Tải lên\".", correct: false },
+      { text: "Muốn tạo dòng thông báo chạy ở đầu trang, ta cần vào phần cài đặt và thiết lập trong mục \"Biểu ngữ thông báo\".", correct: true }
+    ]
+  },
+  {
+    q: "Về việc tạo liên kết và thanh điều hướng trong Google Sites, nhận định nào sau đây ĐÚNG?",
+    items: [
+      { text: "Để tạo liên kết, chọn biểu tượng \"Chèn đường liên kết\", nhập tên hiển thị vào \"Văn bản\" và địa chỉ vào \"Đường liên kết\".", correct: true },
+      { text: "Để mở một trang web chi tiết khi nhấp vào chữ \"Đọc tiếp\", ta phải sử dụng lệnh \"Nhúng\" (Embed).", correct: false },
+      { text: "Cấu trúc trang web của Google Sites được sắp xếp theo dạng hình tròn để tối ưu hóa tìm kiếm.", correct: false },
+      { text: "Để tạo trang con \"KHOI12\" của trang \"TOANTRUONG\", ta nhấn đúp chuột trái vào tên trang chủ và gõ tên trang mới.", correct: false }
+    ]
+  },
+  {
+    q: "Cho đoạn mã CSS sau: &lt;style&gt; div.box {border: 2px dashed red; padding: 10px;} &lt;/style&gt;. Phát biểu nào sau đây là SAI?",
+    items: [
+      { text: "Bộ chọn div.box sẽ áp dụng định dạng cho tất cả các thẻ &lt;div&gt; có khai báo class=\"box\".", correct: true },
+      { text: "Thuộc tính border: 2px dashed red; tạo ra đường viền nét đứt màu đỏ rộng 2px.", correct: true },
+      { text: "Thuộc tính padding: 10px; giúp tạo khoảng cách trống giữa nội dung bên trong và đường viền của nó.", correct: true },
+      { text: "Cách duy nhất để áp dụng CSS này cho nhiều phần tử khác nhau là đổi bộ chọn div.box thành .box.", correct: false }
+    ]
+  }
+];
+
+const labels = ['A','B','C','D'];
+let showingAnswers = false;
+let submitted = false;
+
+// Build Part 1
+function buildPart1() {
+  const container = document.getElementById('part1');
+  part1.forEach((q, qi) => {
+    const block = document.createElement('div');
+    block.className = 'question-block';
+    block.id = 'p1q' + qi;
+
+    let optsHtml = '';
+    q.opts.forEach((opt, oi) => {
+      optsHtml += `<label class="option-label" id="p1q${qi}o${oi}">
+        <input type="radio" name="p1q${qi}" value="${oi}"> <span>${labels[oi]}. ${opt}</span>
+      </label>`;
+    });
+
+    block.innerHTML = `
+      <div class="question-text"><span class="question-num">Câu ${qi+1}.</span> ${q.q}</div>
+      <div class="options">${optsHtml}</div>
+      <div class="feedback" id="p1fb${qi}"></div>`;
+    container.appendChild(block);
+  });
+}
+
+// Build Part 2
+function buildPart2() {
+  const container = document.getElementById('part2');
+  part2.forEach((q, qi) => {
+    const block = document.createElement('div');
+    block.className = 'question-block';
+    block.id = 'p2q' + qi;
+
+    let itemsHtml = '';
+    q.items.forEach((item, ii) => {
+      itemsHtml += `<label class="option-label" id="p2q${qi}i${ii}">
+        <input type="checkbox" id="p2cb${qi}_${ii}"> <span>${labels[ii]}. ${item.text}</span>
+      </label>`;
+    });
+
+    block.innerHTML = `
+      <div class="question-text"><span class="question-num">Câu ${qi+1}.</span> ${q.q}</div>
+      <div style="font-size:12px;color:#777;margin-bottom:8px;">Chọn tất cả các ý ĐÚNG (theo yêu cầu câu hỏi)</div>
+      <div class="options">${itemsHtml}</div>
+      <div class="feedback" id="p2fb${qi}"></div>`;
+    container.appendChild(block);
+  });
+}
+
+function submitAll() {
+  submitted = true;
+  let correct = 0;
+  let total = part1.length + part2.length;
+
+  // Grade Part 1
+  part1.forEach((q, qi) => {
+    const block = document.getElementById('p1q' + qi);
+    const radios = document.querySelectorAll(`input[name="p1q${qi}"]`);
+    let selected = -1;
+    radios.forEach(r => { if (r.checked) selected = parseInt(r.value); });
+
+    const fb = document.getElementById('p1fb' + qi);
+    q.opts.forEach((opt, oi) => {
+      const lbl = document.getElementById(`p1q${qi}o${oi}`);
+      lbl.querySelector('input').disabled = true;
+      if (q.ans.includes(oi)) {
+        if (selected === oi) lbl.className = 'option-label correct-ans';
+        else lbl.className = 'option-label missed-ans';
+      } else if (selected === oi) {
+        lbl.className = 'option-label wrong-ans';
+      }
+    });
+
+    if (selected !== -1 && q.ans.includes(selected)) {
+      block.classList.add('correct');
+      fb.className = 'feedback correct';
+      fb.textContent = '✔ Đúng! Đáp án: ' + labels[q.ans[0]];
+      correct++;
+    } else {
+      block.classList.add('wrong');
+      fb.className = 'feedback wrong';
+      fb.textContent = '✘ Sai! Đáp án đúng: ' + labels[q.ans[0]];
+    }
+  });
+
+  // Grade Part 2 — mỗi câu đúng khi chọn đúng tất cả các ý
+  part2.forEach((q, qi) => {
+    const block = document.getElementById('p2q' + qi);
+    let allCorrect = true;
+
+    q.items.forEach((item, ii) => {
+      const cb = document.getElementById(`p2cb${qi}_${ii}`);
+      const lbl = document.getElementById(`p2q${qi}i${ii}`);
+      cb.disabled = true;
+      const userChecked = cb.checked;
+      // correct: true = đáp án đúng => nên được chọn
+      if (item.correct) {
+        if (userChecked) lbl.className = 'option-label correct-ans';
+        else { lbl.className = 'option-label missed-ans'; allCorrect = false; }
+      } else {
+        if (userChecked) { lbl.className = 'option-label wrong-ans'; allCorrect = false; }
+      }
+    });
+
+    const fb = document.getElementById('p2fb' + qi);
+    if (allCorrect) {
+      block.classList.add('correct');
+      fb.className = 'feedback correct';
+      fb.textContent = '✔ Đúng hoàn toàn!';
+      correct++;
+    } else {
+      block.classList.add('wrong');
+      fb.className = 'feedback wrong';
+      const correctLabels = q.items.map((it,ii)=>it.correct ? labels[ii] : null).filter(Boolean).join(', ');
+      fb.textContent = '✘ Chưa đúng! Các ý đúng: ' + correctLabels;
+    }
+  });
+
+  const scoreBar = document.getElementById('scoreBar');
+  scoreBar.style.display = 'block';
+  document.getElementById('scoreNum').textContent = correct;
+  document.getElementById('scoreTotal').textContent = total;
+  document.getElementById('scorePct').textContent = Math.round(correct/total*100) + '%';
+  scoreBar.scrollIntoView({behavior:'smooth'});
+}
+
+function toggleAnswers() {
+  showingAnswers = !showingAnswers;
+  const btn = document.querySelector('.btn-outline');
+  if (showingAnswers) {
+    btn.textContent = '🙈 Ẩn đáp án';
+    // Show answers without grading
+    part1.forEach((q, qi) => {
+      q.opts.forEach((opt, oi) => {
+        const lbl = document.getElementById(`p1q${qi}o${oi}`);
+        if (!submitted) {
+          if (q.ans.includes(oi)) lbl.style.background = '#e6f4ea';
+          else lbl.style.background = '';
+        }
+      });
+    });
+    part2.forEach((q, qi) => {
+      q.items.forEach((item, ii) => {
+        const lbl = document.getElementById(`p2q${qi}i${ii}`);
+        if (!submitted) {
+          lbl.style.background = item.correct ? '#e6f4ea' : '';
+          lbl.style.borderColor = item.correct ? '#43a047' : '';
+        }
+      });
+    });
+  } else {
+    btn.textContent = '👁 Xem đáp án';
+    if (!submitted) {
+      part1.forEach((q, qi) => {
+        q.opts.forEach((opt, oi) => {
+          document.getElementById(`p1q${qi}o${oi}`).style.background = '';
+        });
+      });
+      part2.forEach((q, qi) => {
+        q.items.forEach((item, ii) => {
+          const lbl = document.getElementById(`p2q${qi}i${ii}`);
+          lbl.style.background = '';
+          lbl.style.borderColor = '';
+        });
+      });
+    }
+  }
+}
+
+function resetAll() {
+  submitted = false;
+  showingAnswers = false;
+  document.getElementById('scoreBar').style.display = 'none';
+  document.querySelector('.btn-outline').textContent = '👁 Xem đáp án';
+
+  part1.forEach((q, qi) => {
+    const block = document.getElementById('p1q' + qi);
+    block.className = 'question-block';
+    const radios = document.querySelectorAll(`input[name="p1q${qi}"]`);
+    radios.forEach(r => { r.checked = false; r.disabled = false; });
+    q.opts.forEach((opt, oi) => {
+      const lbl = document.getElementById(`p1q${qi}o${oi}`);
+      lbl.className = 'option-label';
+      lbl.style.background = '';
+    });
+    document.getElementById('p1fb' + qi).className = 'feedback';
+  });
+
+  part2.forEach((q, qi) => {
+    const block = document.getElementById('p2q' + qi);
+    block.className = 'question-block';
+    q.items.forEach((item, ii) => {
+      const cb = document.getElementById(`p2cb${qi}_${ii}`);
+      cb.checked = false;
+      cb.disabled = false;
+      const lbl = document.getElementById(`p2q${qi}i${ii}`);
+      lbl.className = 'option-label';
+      lbl.style.background = '';
+      lbl.style.borderColor = '';
+    });
+    document.getElementById('p2fb' + qi).className = 'feedback';
+  });
+
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+buildPart1();
+buildPart2();
+</script>
+</body>
+</html>
